@@ -269,7 +269,7 @@ class AnalyzerManager:
     def generate_datasets(self):
         # Generate raw data
         list_hdls = [(self.datasets[name], hdl)
-                     for name, hdl in self.raw_datasets.items()]
+                     for name, hdl in list(self.raw_datasets.items())]
         initial_start_time = self.lmanager.get_initial_start_time()
         start_time = t = self.lmanager.get_start_time()
         end_time = start_time + self.duration
@@ -279,5 +279,5 @@ class AnalyzerManager:
             for dl, hdl in list_hdls:
                 dl.append(hdl.pull_data(t))
         # Generate analyzer data
-        for name, hdl in self.gen_datasets.items():
+        for name, hdl in list(self.gen_datasets.items()):
             self.datasets[name] = hdl.generate_data()

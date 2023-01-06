@@ -266,7 +266,7 @@ class FatFS:
         if ret == 0:
             self.sdcard.print_card_info(print_func)
             dinfo = self.get_disk_info()
-            for key, val in sorted(dinfo.items(), key=lambda x: x[0]):
+            for key, val in sorted(list(dinfo.items()), key=lambda x: x[0]):
                 print_func("%s: %s" % (key, val))
         else:
             raise OSError("flash_sdcard: failed to mount SD Card, returned %s"
@@ -672,7 +672,7 @@ class SDCardSPI:
         print_func("SDHC/SDXC: %s" % (self.high_capacity))
         print_func("Write Protected: %s" % (self.write_protected))
         print_func("Sectors: %d" % (self.total_sectors,))
-        for name, val in self.card_info.items():
+        for name, val in list(self.card_info.items()):
             print_func("%s: %s" % (name, val))
 
     def read_sector(self, sector):

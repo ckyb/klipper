@@ -4,7 +4,7 @@
 # Copyright (C) 2022 Eric Callahan <arksine.code@gmail.com>
 #
 # This file may be distributed under the terms of the GNU GPLv3 license.
-from __future__ import annotations
+
 import sys
 import os
 import asyncio
@@ -491,7 +491,7 @@ class CanSocket:
         if self.closed:
             return
         self.closed = True
-        for node in self.nodes.values():
+        for node in list(self.nodes.values()):
             node.close()
         self._loop.remove_reader(self.cansock.fileno())
         self.cansock.close()

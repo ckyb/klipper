@@ -35,7 +35,7 @@ class PinResolver:
         if pin in self.aliases:
             pin = self.aliases[pin]
         self.aliases[alias] = pin
-        for existing_alias, existing_pin in self.aliases.items():
+        for existing_alias, existing_pin in list(self.aliases.items()):
             if existing_pin == alias:
                 self.aliases[existing_alias] = pin
     def update_command(self, cmd):

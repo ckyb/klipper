@@ -152,7 +152,7 @@ class DataLogger:
                                 "motion_report/dump_stepper", {"name": stepper})
         # Subscribe to additional sensor data
         config = status["configfile"]["settings"]
-        for cfgname in config.keys():
+        for cfgname in list(config.keys()):
             if cfgname == "adxl345" or cfgname.startswith("adxl345 "):
                 aname = cfgname.split()[-1]
                 self.send_subscribe("adxl345:" + aname, "adxl345/dump_adxl345",
@@ -175,7 +175,7 @@ class DataLogger:
     def handle_async_db(self, msg, raw_msg):
         params = msg["params"]
         db_status = self.db['status']
-        for k, v in params.get("status", {}).items():
+        for k, v in list(params.get("status", {}).items()):
             db_status.setdefault(k, {}).update(v)
         eventtime = params['eventtime']
         if eventtime >= self.next_index_time:

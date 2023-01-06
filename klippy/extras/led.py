@@ -124,7 +124,7 @@ class PrinterLED:
         # Render all templates
         need_transmit = {}
         rendered = {}
-        template_info = self.active_templates.items()
+        template_info = list(self.active_templates.items())
         for (led_helper, index), (uid, template, lparams) in template_info:
             color = rendered.get(uid)
             if color is None:
@@ -142,7 +142,7 @@ class PrinterLED:
             led_helper.set_color(index, color)
         context.clear() # Remove circular references for better gc
         # Transmit pending changes
-        for led_helper in need_transmit.keys():
+        for led_helper in list(need_transmit.keys()):
             led_helper.check_transmit(None)
         return eventtime + RENDER_TIME
     cmd_SET_LED_TEMPLATE_help = "Assign a display_template to an LED"
@@ -161,7 +161,7 @@ class PrinterLED:
             if template is None:
                 raise gcmd.error("Unknown display_template '%s'" % (tpl_name,))
             tparams = template.get_params()
-            for p, v in gcmd.get_command_parameters().items():
+            for p, v in list(gcmd.get_command_parameters().items()):
                 if not p.startswith("PARAM_"):
                     continue
                 p = p.lower()

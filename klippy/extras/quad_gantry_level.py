@@ -90,7 +90,7 @@ class QuadGantryLevel:
         z_height[2] = self.plot(slope_y_s23, self.gantry_corners[1][1])
         z_height[3] = self.plot(slope_y_s23, self.gantry_corners[0][1])
 
-        ainfo = zip(["z","z1","z2","z3"], z_height[0:4])
+        ainfo = list(zip(["z","z1","z2","z3"], z_height[0:4]))
         apos = " ".join(["%s: %06f" % (x) for x in ainfo])
         self.gcode.respond_info("Actuator Positions:\n" + apos)
 

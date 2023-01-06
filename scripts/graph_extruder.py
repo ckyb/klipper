@@ -59,7 +59,7 @@ def time_to_index(t):
 
 def indexes(positions):
     drop = time_to_index(MARGIN_TIME)
-    return range(drop, len(positions)-drop)
+    return list(range(drop, len(positions)-drop))
 
 def trim_lists(*lists):
     keep = len(lists[0]) - time_to_index(2. * MARGIN_TIME)

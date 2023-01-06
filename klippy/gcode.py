@@ -311,7 +311,7 @@ class GCodeDispatch:
         # Get Firmware Version and Capabilities
         software_version = self.printer.get_start_args().get('software_version')
         kw = {"FIRMWARE_NAME": "Klipper", "FIRMWARE_VERSION": software_version}
-        msg = " ".join(["%s:%s" % (k, v) for k, v in kw.items()])
+        msg = " ".join(["%s:%s" % (k, v) for k, v in list(kw.items())])
         did_ack = gcmd.ack(msg)
         if not did_ack:
             gcmd.respond_info(msg)

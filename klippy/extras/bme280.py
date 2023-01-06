@@ -189,7 +189,7 @@ class BME280:
             return dig
 
         chip_id = self.read_id()
-        if chip_id not in BME_CHIPS.keys():
+        if chip_id not in list(BME_CHIPS.keys()):
             logging.info("bme280: Unknown Chip ID received %#x" % chip_id)
         else:
             self.chip_type = BME_CHIPS[chip_id]

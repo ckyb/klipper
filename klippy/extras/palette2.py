@@ -13,7 +13,7 @@ from serial import SerialException
 try:
     from queue import Queue, Empty
 except ImportError:
-    from Queue import Queue, Empty
+    from queue import Queue, Empty
 
 COMMAND_HEARTBEAT = "O99"
 COMMAND_CUT = "O10 D5"

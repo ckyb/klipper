@@ -210,7 +210,7 @@ class AngleCalibration:
     def calc_angles(self, meas):
         total_count = total_variance = 0
         angles = {}
-        for step, data in meas.items():
+        for step, data in list(meas.items()):
             count = len(data)
             angle_avg = float(sum(data)) / count
             angles[step] = angle_avg
@@ -230,8 +230,8 @@ class AngleCalibration:
         microsteps, full_steps = self.get_microsteps()
         fangles, fstd, ftotal = self.calc_angles(fcal)
         rangles, rstd, rtotal = self.calc_angles(rcal)
-        if (len({a: i for i, a in fangles.items()}) != len(fangles)
-            or len({a: i for i, a in rangles.items()}) != len(rangles)):
+        if (len({a: i for i, a in list(fangles.items())}) != len(fangles)
+            or len({a: i for i, a in list(rangles.items())}) != len(rangles)):
             raise self.printer.command_error(
                 "Failed calibration - sensor not updating for each step")
         merged = { i: fcal[i] + rcal[i] for i in range(full_steps) }

@@ -92,7 +92,7 @@ class PrinterStepperEnable:
         toolhead = self.printer.lookup_object('toolhead')
         toolhead.dwell(DISABLE_STALL_TIME)
         print_time = toolhead.get_last_move_time()
-        for el in self.enable_lines.values():
+        for el in list(self.enable_lines.values()):
             el.motor_disable(print_time)
         self.printer.send_event("stepper_enable:motor_off", print_time)
         toolhead.dwell(DISABLE_STALL_TIME)

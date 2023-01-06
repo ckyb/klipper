@@ -406,7 +406,7 @@ class BedMeshCalibrate:
                 % (rri, self.points[rri][0], self.points[rri][1]))
         if self.substituted_indices:
             print_func("bed_mesh: faulty region points")
-            for i, v in self.substituted_indices.items():
+            for i, v in list(self.substituted_indices.items()):
                 pt = self.points[i]
                 print_func("%d (%.2f, %.2f), substituted points: %s"
                            % (i, pt[0], pt[1], repr(v)))
@@ -579,7 +579,7 @@ class BedMeshCalibrate:
             msg = "relative_reference_index: %s\n" % \
                 (self.relative_reference_index)
             msg += "\n".join(["%s: %s" % (k, v) for k, v
-                              in self.mesh_config.items()])
+                              in list(self.mesh_config.items())])
             logging.info("Updated Mesh Configuration:\n" + msg)
         else:
             self.points = self.orig_points
@@ -590,7 +590,7 @@ class BedMeshCalibrate:
             return self.points
         adj_pts = []
         last_index = 0
-        for i, pts in self.substituted_indices.items():
+        for i, pts in list(self.substituted_indices.items()):
             adj_pts.extend(self.points[last_index:i])
             adj_pts.extend(pts)
             # Add one to the last index to skip the point
@@ -625,7 +625,7 @@ class BedMeshCalibrate:
             corrected_pts = []
             idx_offset = 0
             start_idx = 0
-            for i, pts in self.substituted_indices.items():
+            for i, pts in list(self.substituted_indices.items()):
                 fpt = [p - o for p, o in zip(self.points[i], offsets[:2])]
                 # offset the index to account for additional samples
                 idx = i + idx_offset
@@ -815,7 +815,7 @@ class ZMesh:
         self.avg_z = 0.
         self.mesh_offsets = [0., 0.]
         logging.debug('bed_mesh: probe/mesh parameters:')
-        for key, value in self.mesh_params.items():
+        for key, value in list(self.mesh_params.items()):
             logging.debug("%s :  %s" % (key, value))
         self.mesh_x_min = params['min_x']
         self.mesh_x_max = params['max_x']
@@ -1126,7 +1126,7 @@ class ProfileManager:
             self.profiles[name]['points'] = zvals
             self.profiles[name]['mesh_params'] = params = \
                 collections.OrderedDict()
-            for key, t in PROFILE_OPTIONS.items():
+            for key, t in list(PROFILE_OPTIONS.items()):
                 if t is int:
                     params[key] = profile.getint(key)
                 elif t is float:
@@ -1176,7 +1176,7 @@ class ProfileManager:
             z_values = z_values[:-2]
         configfile.set(cfg_name, 'version', PROFILE_VERSION)
         configfile.set(cfg_name, 'points', z_values)
-        for key, value in mesh_params.items():
+        for key, value in list(mesh_params.items()):
             configfile.set(cfg_name, key, value)
         # save copy in local storage
         # ensure any self.profiles returned as status remains immutable

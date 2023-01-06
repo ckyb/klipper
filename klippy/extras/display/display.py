@@ -140,7 +140,7 @@ class PrinterDisplayTemplate:
                 raise config.error("Section name '%s' is not valid"
                                    % (c.get_name(),))
             groups.setdefault(name_parts[1], []).append(c)
-        for group_name, data_configs in groups.items():
+        for group_name, data_configs in list(groups.items()):
             dg = DisplayGroup(config, group_name, data_configs)
             self.display_data_groups[group_name] = dg
         # Load display glyphs

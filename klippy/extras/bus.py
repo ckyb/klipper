@@ -17,7 +17,7 @@ def resolve_bus_name(mcu, param, bus):
     ppins = mcu.get_printer().lookup_object("pins")
     mcu_name = mcu.get_name()
     if bus is None:
-        rev_enums = {v: k for k, v in enums.items()}
+        rev_enums = {v: k for k, v in list(enums.items())}
         if 0 not in rev_enums:
             raise ppins.error("Must specify %s on mcu '%s'" % (param, mcu_name))
         bus = rev_enums[0]

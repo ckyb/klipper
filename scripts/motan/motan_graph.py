@@ -8,7 +8,7 @@ import sys, optparse, ast
 import matplotlib
 import readlog, analyzers
 try:
-    import urlparse
+    import urllib.parse
 except:
     import urllib.parse as urlparse
 
@@ -79,7 +79,7 @@ def parse_graph_description(desc):
     if '?' not in desc:
         return (desc, {})
     dataset, params = desc.split('?', 1)
-    params = {k: v for k, v in urlparse.parse_qsl(params)}
+    params = {k: v for k, v in urllib.parse.parse_qsl(params)}
     for fkey in ['alpha']:
         if fkey in params:
             params[fkey] = float(params[fkey])

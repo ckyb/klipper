@@ -1083,7 +1083,7 @@ class Kconfig(object):
             # Parse the Kconfig files. Returns the last node, which we
             # terminate with '.next = None'.
             self._parse_block(None, self.top_node, self.top_node).next = None
-            self.top_node.list = self.top_node.next
+            self.top_node.list = self.top_node.__next__
             self.top_node.next = None
         except UnicodeDecodeError as e:
             _decoding_error(e, self.filename)
@@ -1613,8 +1613,8 @@ class Kconfig(object):
             # Jump to the next node with an iterative tree walk
             if node.list:
                 node = node.list
-            elif node.next:
-                node = node.next
+            elif node.__next__:
+                node = node.__next__
             else:
                 while node.parent:
                     node = node.parent
@@ -1626,8 +1626,8 @@ class Kconfig(object):
                         add("# end of {}\n".format(node.prompt[0]))
                         after_end_comment = True
 
-                    if node.next:
-                        node = node.next
+                    if node.__next__:
+                        node = node.__next__
                         break
                 else:
                     # No more nodes
@@ -1941,13 +1941,13 @@ class Kconfig(object):
             # Jump to the next node with an iterative tree walk
             if node.list:
                 node = node.list
-            elif node.next:
-                node = node.next
+            elif node.__next__:
+                node = node.__next__
             else:
                 while node.parent:
                     node = node.parent
-                    if node.next:
-                        node = node.next
+                    if node.__next__:
+                        node = node.__next__
                         break
                 else:
                     # No more nodes
@@ -3011,7 +3011,7 @@ class Kconfig(object):
                 node.dep = self._expect_expr_and_eol()
 
                 self._parse_block(_T_ENDIF, node, node)
-                node.list = node.next
+                node.list = node.__next__
 
                 prev.next = prev = node
 
@@ -3031,7 +3031,7 @@ class Kconfig(object):
 
                 self._parse_props(node)
                 self._parse_block(_T_ENDMENU, node, node)
-                node.list = node.next
+                node.list = node.__next__
 
                 prev.next = prev = node
 
@@ -3083,7 +3083,7 @@ class Kconfig(object):
 
                 self._parse_props(node)
                 self._parse_block(_T_ENDCHOICE, node, node)
-                node.list = node.next
+                node.list = node.__next__
 
                 prev.next = prev = node
 
@@ -3590,18 +3590,18 @@ class Kconfig(object):
             # Find any items that should go in an implicit menu rooted at the
             # symbol
             cur = node
-            while cur.next and _auto_menu_dep(node, cur.next):
+            while cur.__next__ and _auto_menu_dep(node, cur.__next__):
                 # This makes implicit submenu creation work recursively, with
                 # implicit menus inside implicit menus
-                self._finalize_node(cur.next, visible_if)
-                cur = cur.next
+                self._finalize_node(cur.__next__, visible_if)
+                cur = cur.__next__
                 cur.parent = node
 
             if cur is not node:
                 # Found symbols that should go in an implicit submenu. Tilt
                 # them up above us.
-                node.list = node.next
-                node.next = cur.next
+                node.list = node.__next__
+                node.next = cur.__next__
                 cur.next = None
 
         elif node.list:
@@ -3620,7 +3620,7 @@ class Kconfig(object):
             cur = node.list
             while cur:
                 self._finalize_node(cur, visible_if)
-                cur = cur.next
+                cur = cur.__next__
 
         if node.list:
             # node's children have been individually finalized. Do final steps
@@ -3689,7 +3689,7 @@ class Kconfig(object):
                 cur.prompt = (cur.prompt[0],
                               self._make_and(cur.prompt[1], dep))
 
-            cur = cur.next
+            cur = cur.__next__
 
     def _add_props_to_sym(self, node):
         # Copies properties from the menu node 'node' up to its contained
@@ -5760,7 +5760,7 @@ class MenuNode(object):
         if self.list:
             add("has child")
 
-        if self.next:
+        if self.__next__:
             add("has next")
 
         add("{}:{}".format(self.filename, self.linenr))
@@ -6263,17 +6263,17 @@ def load_allconfig(kconf, filename):
 
     if allconfig in ("", "1"):
         try:
-            print(kconf.load_config(filename, False))
+            print((kconf.load_config(filename, False)))
         except EnvironmentError as e1:
             try:
-                print(kconf.load_config("all.config", False))
+                print((kconf.load_config("all.config", False)))
             except EnvironmentError as e2:
                 sys.exit("error: KCONFIG_ALLCONFIG is set, but neither {} "
                          "nor all.config could be opened: {}, {}"
                          .format(filename, std_msg(e1), std_msg(e2)))
     else:
         try:
-            print(kconf.load_config(allconfig, False))
+            print((kconf.load_config(allconfig, False)))
         except EnvironmentError as e:
             sys.exit("error: KCONFIG_ALLCONFIG is set to '{}', which "
                      "could not be opened: {}"
@@ -6496,15 +6496,15 @@ def _flatten(node):
             last_node = node.list
             while 1:
                 last_node.parent = node.parent
-                if not last_node.next:
+                if not last_node.__next__:
                     break
-                last_node = last_node.next
+                last_node = last_node.__next__
 
-            last_node.next = node.next
+            last_node.next = node.__next__
             node.next = node.list
             node.list = None
 
-        node = node.next
+        node = node.__next__
 
 
 def _remove_ifs(node):
@@ -6515,14 +6515,14 @@ def _remove_ifs(node):
 
     cur = node.list
     while cur and not cur.item:
-        cur = cur.next
+        cur = cur.__next__
 
     node.list = cur
 
     while cur:
-        next = cur.next
+        next = cur.__next__
         while next and not next.item:
-            next = next.next
+            next = next.__next__
 
         # Equivalent to
         #
@@ -6545,7 +6545,7 @@ def _finalize_choice(node):
         if cur.item.__class__ is Symbol:
             cur.item.choice = choice
             choice.syms.append(cur.item)
-        cur = cur.next
+        cur = cur.__next__
 
     # If no type is specified for the choice, its type is that of
     # the first choice item with a specified type
@@ -6763,7 +6763,7 @@ def _lineno_fn(kconf, _):
 
 
 def _info_fn(kconf, _, msg):
-    print("{}:{}: {}".format(kconf.filename, kconf.linenr, msg))
+    print(("{}:{}: {}".format(kconf.filename, kconf.linenr, msg)))
 
     return ""
 
@@ -6904,7 +6904,7 @@ except AttributeError:
     _T_TRISTATE,
     _T_UNEQUAL,
     _T_VISIBLE,
-) = range(1, 51)
+) = list(range(1, 51))
 
 # Keyword to token map, with the get() method assigned directly as a small
 # optimization

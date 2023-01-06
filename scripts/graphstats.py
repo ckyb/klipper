@@ -81,7 +81,7 @@ def find_print_restarts(data):
             if last_runoff_start:
                 runoff_samples[last_runoff_start][0] = True
         last_print_stall = print_stall
-    sample_resets = {sampletime: 1 for stall, samples in runoff_samples.values()
+    sample_resets = {sampletime: 1 for stall, samples in list(runoff_samples.values())
                      for sampletime in samples if not stall}
     return sample_resets
 
@@ -190,13 +190,13 @@ def plot_mcu_frequencies(data):
                        or (key.endswith(":freq") or key.endswith(":adj"))) }
     for d in data:
         st = datetime.datetime.utcfromtimestamp(d['#sampletime'])
-        for key, (times, values) in graph_keys.items():
+        for key, (times, values) in list(graph_keys.items()):
             val = d.get(key)
             if val not in (None, '0', '1'):
                 times.append(st)
                 values.append(float(val))
     est_mhz = { key: round((sum(values)/len(values)) / 1000000.)
-                for key, (times, values) in graph_keys.items() }
+                for key, (times, values) in list(graph_keys.items()) }
 
     # Build plot
     fig, ax1 = matplotlib.pyplot.subplots()
@@ -225,7 +225,7 @@ def plot_mcu_frequency(data, mcu):
                    if key in ("freq", "adj") }
     for d in data:
         st = datetime.datetime.utcfromtimestamp(d['#sampletime'])
-        for key, (times, values) in graph_keys.items():
+        for key, (times, values) in list(graph_keys.items()):
             val = d.get(key)
             if val not in (None, '0', '1'):
                 times.append(st)

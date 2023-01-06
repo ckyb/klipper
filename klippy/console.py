@@ -71,7 +71,7 @@ class KeyboardReader:
         self.output("Loaded %d commands (%s / %s)"
                     % (message_count, version, build_versions))
         self.output("MCU config: %s" % (" ".join(
-            ["%s=%s" % (k, v) for k, v in msgparser.get_constants().items()])))
+            ["%s=%s" % (k, v) for k, v in list(msgparser.get_constants().items())])))
         self.clocksync.connect(self.ser)
         self.ser.handle_default = self.handle_default
         self.ser.register_response(self.handle_output, '#output')

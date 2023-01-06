@@ -17,13 +17,13 @@ REQUEST_LOG_SIZE = 20
 json_loads_byteify = None
 if sys.version_info.major < 3:
     def json_loads_byteify(data, ignore_dicts=False):
-        if isinstance(data, unicode):
+        if isinstance(data, str):
             return data.encode('utf-8')
         if isinstance(data, list):
             return [json_loads_byteify(i, True) for i in data]
         if isinstance(data, dict) and not ignore_dicts:
             return {json_loads_byteify(k, True): json_loads_byteify(v, True)
-                    for k, v in data.items()}
+                    for k, v in list(data.items())}
         return data
 
 class WebRequestError(gcode.CommandError):
@@ -146,7 +146,7 @@ class ServerSocket:
                 pass
 
     def _handle_shutdown(self):
-        for client in self.clients.values():
+        for client in list(self.clients.values()):
             client.dump_request_log()
 
     def _remove_socket_file(self, file_path):
@@ -391,7 +391,7 @@ class WebHooks:
                 "Remote method '%s' not registered" % (method))
         conn_map = self._remote_methods[method]
         valid_conns = {}
-        for conn, template in conn_map.items():
+        for conn, template in list(conn_map.items()):
             if not conn.is_closed():
                 valid_conns[conn] = template
                 out = {'params': kwargs}
@@ -466,7 +466,7 @@ class QueryStatusHelper:
         query = self.last_query = {}
         msglist = self.pending_queries
         self.pending_queries = []
-        msglist.extend(self.clients.values())
+        msglist.extend(list(self.clients.values()))
         # Generate get_status() info for each client
         for cconn, subscription, send_func, template in msglist:
             is_query = cconn is None
@@ -475,7 +475,7 @@ class QueryStatusHelper:
                 continue
             # Query each requested printer object
             cquery = {}
-            for obj_name, req_items in subscription.items():
+            for obj_name, req_items in list(subscription.items()):
                 res = query.get(obj_name, None)
                 if res is None:
                     po = self.printer.lookup_object(obj_name, None)
@@ -510,7 +510,7 @@ class QueryStatusHelper:
     def _handle_query(self, web_request, is_subscribe=False):
         objects = web_request.get_dict('objects')
         # Validate subscription format
-        for k, v in objects.items():
+        for k, v in list(objects.items()):
             if type(k) != str or (v is not None and type(v) != list):
                 raise web_request.error("Invalid argument")
             if v is not None:

@@ -220,7 +220,7 @@ class EndstopPhases:
     def get_status(self, eventtime):
         lh = { name: {'phase': pc.last_phase, 'phases': pc.phases,
                       'mcu_position': pc.last_mcu_position}
-               for name, pc in self.tracking.items()
+               for name, pc in list(self.tracking.items())
                if pc.phase_history is not None }
         return { 'last_home': lh }
 

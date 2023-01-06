@@ -440,7 +440,7 @@ class StatsStream:
             keyparts[mcu + name] = val
         min_ts = 0
         max_ts = 999999999999
-        for mcu_name, mcu in self.mcus.items():
+        for mcu_name, mcu in list(self.mcus.items()):
             sname = '%s:send_seq' % (mcu_name,)
             rname = '%s:receive_seq' % (mcu_name,)
             if sname not in keyparts:
@@ -489,9 +489,9 @@ class StatsStream:
     def get_lines(self):
         # Ignore old stats
         all_ts = []
-        for mcu_name, mcu in self.mcus.items():
-            all_ts.extend(mcu.sent_seq_to_time.values())
-            all_ts.extend(mcu.receive_seq_to_time.values())
+        for mcu_name, mcu in list(self.mcus.items()):
+            all_ts.extend(list(mcu.sent_seq_to_time.values()))
+            all_ts.extend(list(mcu.receive_seq_to_time.values()))
         if not all_ts:
             return []
         min_stream_ts = min(all_ts)
@@ -517,7 +517,7 @@ class GatherShutdown:
         self.filename = "%s.shutdown%05d" % (logname, line_num)
         self.comments = []
         if configs:
-            configs_by_id = {c.config_num: c for c in configs.values()}
+            configs_by_id = {c.config_num: c for c in list(configs.values())}
             config = configs_by_id[max(configs_by_id.keys())]
             config.add_comment(format_comment(line_num, recent_lines[-1][1]))
             self.comments.append("# config %s" % (config.filename,))
@@ -603,7 +603,7 @@ def main():
     if handler is not None:
         handler.finalize()
     # Write found config files
-    for cfg in configs.values():
+    for cfg in list(configs.values()):
         cfg.write_file()
 
 if __name__ == '__main__':

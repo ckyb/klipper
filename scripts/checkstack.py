@@ -180,14 +180,14 @@ def main():
             elif insn in ('rcall', 'call'):
                 cur.noteCall(insnaddr, calladdr, stackusage + 2)
             else:
-                print("unknown call", ref)
+                print(("unknown call", ref))
                 cur.noteCall(insnaddr, calladdr, stackusage)
         # Reset stack usage to preamble usage
         stackusage = cur.basic_stack_usage
 
     # Update for known indirect functions
     funcsbyname = {}
-    for info in funcs.values():
+    for info in list(funcs.values()):
         funcnameroot = info.funcname.split('.')[0]
         funcsbyname[funcnameroot] = info
     cmdfunc = funcsbyname.get('sched_main')
@@ -208,16 +208,16 @@ def main():
             stackusage = cmdfunc.basic_stack_usage + 2 + numparams * 4
             cmdfunc.noteCall(0, calladdr, stackusage)
     eventfunc = funcsbyname.get('__vector_13', funcsbyname.get('__vector_17'))
-    for funcnameroot, info in funcsbyname.items():
+    for funcnameroot, info in list(funcsbyname.items()):
         if funcnameroot.endswith('_event') and eventfunc is not None:
             eventfunc.noteCall(0, info.funcaddr, eventfunc.basic_stack_usage+2)
 
     # Calculate maxstackusage
-    for info in funcs.values():
+    for info in list(funcs.values()):
         calcmaxstack(info, funcs)
 
     # Sort functions for output
-    funcinfos = orderfuncs(funcs.keys(), funcs.copy())
+    funcinfos = orderfuncs(list(funcs.keys()), funcs.copy())
 
     # Show all functions
     print(OUTPUTDESC)
@@ -227,17 +227,17 @@ def main():
         yieldstr = ""
         if info.max_yield_usage >= 0:
             yieldstr = ",%d" % info.max_yield_usage
-        print("\n%s[%d,%d%s]:" % (info.funcname, info.basic_stack_usage
-                                  , info.max_stack_usage, yieldstr))
+        print(("\n%s[%d,%d%s]:" % (info.funcname, info.basic_stack_usage
+                                  , info.max_stack_usage, yieldstr)))
         for insnaddr, calladdr, stackusage in info.called_funcs:
             callinfo = funcs.get(calladdr, unknownfunc)
             yieldstr = ""
             if callinfo.max_yield_usage >= 0:
                 yieldstr = ",%d" % (stackusage + callinfo.max_yield_usage)
-            print("    %04s:%-40s [%d+%d,%d%s]" % (
+            print(("    %04s:%-40s [%d+%d,%d%s]" % (
                 insnaddr, callinfo.funcname, stackusage
                 , callinfo.basic_stack_usage
-                , stackusage+callinfo.max_stack_usage, yieldstr))
+                , stackusage+callinfo.max_stack_usage, yieldstr)))
 
 if __name__ == '__main__':
     main()

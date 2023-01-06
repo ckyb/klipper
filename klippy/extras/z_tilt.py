@@ -159,7 +159,7 @@ class ZTilt:
                 total_error += adjusted_height(pos, params)**2
             return total_error
         new_params = mathutil.coordinate_descent(
-            params.keys(), params, errorfunc)
+            list(params.keys()), params, errorfunc)
         # Apply results
         speed = self.probe_helper.get_lift_speed()
         logging.info("Calculated bed tilt parameters: %s", new_params)

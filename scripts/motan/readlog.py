@@ -522,7 +522,7 @@ class TrackStatus:
         while 1:
             if req_time < self.next_status_time:
                 return status, self.next_status_time
-            for k, v in self.next_update.items():
+            for k, v in list(self.next_update.items()):
                 status.setdefault(k, {}).update(v)
             jmsg = self.jdispatch.pull_msg(req_time, self.name)
             if jmsg is None:
@@ -600,7 +600,7 @@ class LogManager:
             ptime = max(th['estimated_print_time'], th.get('print_time', 0.))
             if ptime > seek_time:
                 break
-            for k, v in fmsg["status"].items():
+            for k, v in list(fmsg["status"].items()):
                 start_status.setdefault(k, {}).update(v)
             file_position = fmsg['file_position']
         if file_position:

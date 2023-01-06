@@ -183,7 +183,7 @@ Doesn't work out of the box on Windows, but can be made to work with
 
 See the https://github.com/zephyrproject-rtos/windows-curses repository.
 """
-from __future__ import print_function
+
 
 import os
 import sys
@@ -1510,7 +1510,7 @@ def _shown_nodes(menu):
                     if not node.is_menuconfig:
                         res += shown_children
 
-            node = node.next
+            node = node.__next__
 
         return res
 

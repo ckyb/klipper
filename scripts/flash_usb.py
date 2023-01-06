@@ -370,7 +370,7 @@ def main():
         opts.error("Incorrect number of arguments")
     flash_func = None
     if options.mcutype:
-        for prefix, func in MCUTYPES.items():
+        for prefix, func in list(MCUTYPES.items()):
             if options.mcutype.startswith(prefix):
                 flash_func = func
                 break
